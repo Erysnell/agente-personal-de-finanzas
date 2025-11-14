@@ -20,6 +20,32 @@ Un bot de Telegram inteligente que te ayuda a gestionar tus finanzas personales 
 - Una cuenta de Telegram
 - Una API key de Google Gemini (gratuita)
 
+### Opción 1: Instalación automática (recomendada)
+
+**Linux/Mac:**
+```bash
+git clone https://github.com/Erysnell/agente-personal-de-finanzas.git
+cd agente-personal-de-finanzas
+chmod +x setup.sh
+./setup.sh
+```
+
+**Windows:**
+```bash
+git clone https://github.com/Erysnell/agente-personal-de-finanzas.git
+cd agente-personal-de-finanzas
+setup.bat
+```
+
+El script de instalación:
+- ✅ Verifica que tengas Python 3.8+
+- ✅ Crea un entorno virtual
+- ✅ Instala todas las dependencias
+- ✅ Crea el archivo .env
+- ✅ Ejecuta las pruebas
+
+### Opción 2: Instalación manual
+
 ### Paso 1: Clonar el repositorio
 
 ```bash
@@ -27,13 +53,24 @@ git clone https://github.com/Erysnell/agente-personal-de-finanzas.git
 cd agente-personal-de-finanzas
 ```
 
-### Paso 2: Instalar dependencias
+### Paso 2: Crear entorno virtual (recomendado)
+
+```bash
+python -m venv venv
+source venv/bin/activate  # Linux/Mac
+# o
+venv\Scripts\activate     # Windows
+```
+
+### Paso 3: Instalar dependencias
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### Paso 3: Configurar variables de entorno
+### Paso 4: Configurar variables de entorno
+
+### Paso 4: Configurar variables de entorno
 
 1. Crea un archivo `.env` en la raíz del proyecto:
 
@@ -59,7 +96,7 @@ TELEGRAM_BOT_TOKEN=1234567890:ABCdefGHIjklMNOpqrsTUVwxyz
 GOOGLE_API_KEY=AIzaSyA...
 ```
 
-### Paso 4: Ejecutar el bot
+### Paso 5: Ejecutar el bot
 
 ```bash
 python bot.py
@@ -69,6 +106,12 @@ python bot.py
 
 ## 📱 Uso
 
+### Inicio rápido
+
+1. Busca tu bot en Telegram (usa el nombre que configuraste con @BotFather)
+2. Envía `/start` para comenzar
+3. ¡Empieza a conversar en lenguaje natural!
+
 ### Comandos disponibles
 
 - `/start` - Iniciar el bot y ver mensaje de bienvenida
@@ -76,6 +119,8 @@ python bot.py
 - `/balance` - Consultar tu saldo actual
 
 ### Ejemplos de uso
+
+**📖 Para más ejemplos y guía detallada, consulta [GUIA_DE_USO.md](GUIA_DE_USO.md)**
 
 **Registrar gastos:**
 ```
@@ -118,10 +163,14 @@ agente-personal-de-finanzas/
 ├── agent.py            # Agente LangChain con Gemini
 ├── tools.py            # Herramientas del agente (funciones)
 ├── database.py         # Gestor de base de datos
+├── test.py             # Suite de pruebas
+├── setup.sh            # Script de instalación (Linux/Mac)
+├── setup.bat           # Script de instalación (Windows)
 ├── requirements.txt    # Dependencias Python
 ├── .env.example        # Ejemplo de variables de entorno
 ├── .gitignore         # Archivos ignorados por git
-└── README.md          # Este archivo
+├── README.md          # Este archivo
+└── GUIA_DE_USO.md     # Guía detallada de uso
 ```
 
 ## 💡 Cómo funciona
@@ -157,9 +206,26 @@ Este proyecto es de código abierto y está disponible bajo la licencia MIT.
 ## ⚠️ Notas importantes
 
 - Los datos se almacenan localmente en un archivo `finance.db`
-- Cada usuario de Telegram tiene sus propios datos separados
-- La base de datos NO incluye backup automático - haz copias de seguridad regularmente
+- Cada usuario de Telegram tiene sus propios datos separados (identificados por user_id)
+- La base de datos NO incluye backup automático - se recomienda hacer copias de seguridad del archivo `finance.db` regularmente
 - El bot debe estar ejecutándose constantemente para responder mensajes
+- Considera usar un servidor o VPS para mantener el bot 24/7
+- Para producción, considera usar un supervisor de procesos como `systemd`, `supervisor` o `pm2`
+
+## 🧪 Pruebas
+
+Para ejecutar las pruebas y verificar que todo funciona correctamente:
+
+```bash
+python test.py
+```
+
+Las pruebas verifican:
+- ✅ Importación correcta de todos los módulos
+- ✅ Operaciones de base de datos
+- ✅ Adición de gastos e ingresos
+- ✅ Cálculo de balance
+- ✅ Consultas y resúmenes por categoría
 
 ## 📧 Soporte
 
