@@ -11,12 +11,22 @@ from dotenv import load_dotenv
 # Load environment variables
 load_dotenv()
 
-# Initialize database and agent
+# Initialize database
 db = DatabaseManager()
-agent = FinanceAgent(
-    google_api_key=os.getenv("GOOGLE_API_KEY"),
-    db=db
-)
+
+# Agent will be initialized lazily
+agent = None
+
+
+def get_agent():
+    """Get or create the agent instance."""
+    global agent
+    if agent is None:
+        google_api_key = os.getenv("GOOGLE_API_KEY")
+        if not google_api_key:
+            raise ValueError("GOOGLE_API_KEY not found in environment variables")
+        agent = FinanceAgent(google_api_key=google_api_key, db=db)
+    return agent
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -75,7 +85,7 @@ También puedes escribirme de forma natural y te entenderé. Por ejemplo:
 async def balance_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Get current balance."""
     user_id = update.effective_user.id
-    response = agent.process_message(user_id, "cuál es mi saldo actual?")
+    response = get_agent().process_message(user_id, "cuál es mi saldo actual?")
     await update.message.reply_text(response)
 
 
@@ -88,7 +98,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await context.bot.send_chat_action(chat_id=update.effective_chat.id, action="typing")
     
     # Process message with agent
-    response = agent.process_message(user_id, user_message)
+    response = get_agent().process_message(user_id, user_message)
     
     # Send response
     await update.message.reply_text(response)
@@ -109,6 +119,11 @@ def main():
     token = os.getenv("TELEGRAM_BOT_TOKEN")
     if not token:
         print("Error: TELEGRAM_BOT_TOKEN no está configurado en el archivo .env")
+        return
+    
+    # Verify API key is available
+    if not os.getenv("GOOGLE_API_KEY"):
+        print("Error: GOOGLE_API_KEY no está configurado en el archivo .env")
         return
     
     # Create application
